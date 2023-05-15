@@ -1,13 +1,7 @@
 import { useContext, createContext } from "react"
 
 export type AuthIdentity = {
-  id: string
-  uid: string
-  phoneNumber?: string
-  emailAddress?: string
-  firstName?: string
-  lastName?: string
-  accountStatus?: "NEW" | "PENDING" | "ACTIVE" | "LOCKED" // FIXME: Get from client
+  token: string
 }
 
 export type AuthSession = {
@@ -23,11 +17,12 @@ type AuthContextType = {
   isAuthenticated: boolean
   authIdentity?: AuthIdentity
   setAuthSession: (session: AuthSession) => void
-  syncSession: (kratosCookieResp?: KratosCookieResp) => Promise<true | Error>
+  syncSession: () => Promise<boolean>
 }
 
 export const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
+  authIdentity: undefined,
   setAuthSession: () => {},
   syncSession: () => Promise.resolve(true),
 })

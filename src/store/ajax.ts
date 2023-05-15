@@ -7,7 +7,7 @@ const get = async (path: string, params?: Record<string, string | number | boole
 
     const response = await fetch(url.toString(), {
       method: "get",
-      credentials: "include",
+      // credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -27,7 +27,7 @@ const post = async (
     const response = await fetch(path, {
       method: "post",
       body: JSON.stringify(params),
-      credentials: "include",
+      // credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

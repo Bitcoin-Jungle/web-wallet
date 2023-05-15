@@ -1,0 +1,100 @@
+diff --git a/node_modules/@galoymoney/client/dist/client/index.js b/node_modules/@galoymoney/client/dist/client/index.js
+index e9dea51..b40fabc 100644
+--- a/node_modules/@galoymoney/client/dist/client/index.js
++++ b/node_modules/@galoymoney/client/dist/client/index.js
+@@ -79,7 +79,7 @@ var getRequest = function (headers) {
+                         url.search = new URLSearchParams(params).toString();
+                         return [4 /*yield*/, fetch(url.toString(), {
+                                 method: "get",
+-                                credentials: "include",
++                                // credentials: "include",
+                                 headers: __assign({ "Content-Type": "application/json" }, headers),
+                             })];
+                     case 1:
+@@ -110,7 +110,7 @@ var postRequest = function (authToken) {
+                         return [4 /*yield*/, fetch(path, {
+                                 method: "post",
+                                 body: JSON.stringify(variables),
+-                                credentials: "include",
++                                // credentials: "include",
+                                 headers: {
+                                     "Content-Type": "application/json",
+                                     "authorization": authToken ? "Bearer ".concat(authToken) : "",
+@@ -156,7 +156,7 @@ var createGaloyClient = function (_a) {
+             });
+             return forward(operation);
+         });
+-        var httpLink = new client_1.HttpLink({ uri: config.graphqlUrl, credentials: "include" });
++        var httpLink = new client_1.HttpLink({ uri: config.graphqlUrl, /*credentials: "include"*/ });
+         var wsLink = new ws_1.WebSocketLink({
+             uri: config.graphqlSubscriptionUrl,
+             options: {
+@@ -166,7 +166,7 @@ var createGaloyClient = function (_a) {
+                 connectionParams: function () { return __awaiter(void 0, void 0, void 0, function () {
+                     return __generator(this, function (_a) {
+                         return [2 /*return*/, {
+-                                credentials: "include",
++                                // credentials: "include",
+                                 authorization: authToken ? "Bearer ".concat(authToken) : "",
+                             }];
+                     });
+diff --git a/node_modules/@galoymoney/client/dist/graphql/fragments/me-fragment.js b/node_modules/@galoymoney/client/dist/graphql/fragments/me-fragment.js
+index 8132a63..8bdc6bf 100644
+--- a/node_modules/@galoymoney/client/dist/graphql/fragments/me-fragment.js
++++ b/node_modules/@galoymoney/client/dist/graphql/fragments/me-fragment.js
+@@ -9,6 +9,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+ Object.defineProperty(exports, "__esModule", { value: true });
+ var client_1 = require("@apollo/client");
+ var transaction_list_fragment_1 = __importDefault(require("./transaction-list-fragment"));
+-var meFragment = (0, client_1.gql)(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  fragment Me on User {\n    id\n    language\n    username\n    phone\n    defaultAccount {\n      id\n      defaultWalletId\n      transactions(first: $recentTransactions) {\n        ...TransactionList\n      }\n      wallets {\n        id\n        balance\n        walletCurrency\n      }\n    }\n  }\n  ", "\n"], ["\n  fragment Me on User {\n    id\n    language\n    username\n    phone\n    defaultAccount {\n      id\n      defaultWalletId\n      transactions(first: $recentTransactions) {\n        ...TransactionList\n      }\n      wallets {\n        id\n        balance\n        walletCurrency\n      }\n    }\n  }\n  ", "\n"])), transaction_list_fragment_1.default);
++var meFragment = (0, client_1.gql)(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  fragment Me on User {\n    id\n    language\n    username\n    phone\n\n    defaultAccount {\n      id\n      defaultWalletId\n      wallets {\n        id\n        balance\n        walletCurrency\n        transactions(first: $recentTransactions) {\n          ...TransactionList\n        }\n      }\n    }\n  }\n  ", "\n"], ["\n  fragment Me on User {\n    id\n    language\n    username\n    phone\n\n    defaultAccount {\n      id\n      defaultWalletId\n      wallets {\n        id\n        balance\n        walletCurrency\n        transactions(first: $recentTransactions) {\n          ...TransactionList\n        }\n      }\n    }\n  }\n  ", "\n"])), transaction_list_fragment_1.default);
+ exports.default = meFragment;
+ var templateObject_1;
+diff --git a/node_modules/@galoymoney/client/dist/graphql/fragments/transaction-list-fragment.js b/node_modules/@galoymoney/client/dist/graphql/fragments/transaction-list-fragment.js
+index 341e996..c528ad3 100644
+--- a/node_modules/@galoymoney/client/dist/graphql/fragments/transaction-list-fragment.js
++++ b/node_modules/@galoymoney/client/dist/graphql/fragments/transaction-list-fragment.js
+@@ -5,6 +5,6 @@ var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cook
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+ var client_1 = require("@apollo/client");
+-var transactionListFragment = (0, client_1.gql)(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  fragment TransactionList on TransactionConnection {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        __typename\n        id\n        status\n        direction\n        memo\n        createdAt\n\n        settlementAmount\n        settlementFee\n        settlementCurrency\n        settlementPrice {\n          base\n          offset\n          currencyUnit\n          formattedAmount\n        }\n\n        initiationVia {\n          __typename\n          ... on InitiationViaIntraLedger {\n            counterPartyWalletId\n            counterPartyUsername\n          }\n          ... on InitiationViaLn {\n            paymentHash\n          }\n          ... on InitiationViaOnChain {\n            address\n          }\n        }\n        settlementVia {\n          __typename\n          ... on SettlementViaIntraLedger {\n            counterPartyWalletId\n            counterPartyUsername\n          }\n          ... on SettlementViaLn {\n            paymentSecret\n          }\n          ... on SettlementViaOnChain {\n            transactionHash\n          }\n        }\n      }\n    }\n  }\n"], ["\n  fragment TransactionList on TransactionConnection {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        __typename\n        id\n        status\n        direction\n        memo\n        createdAt\n\n        settlementAmount\n        settlementFee\n        settlementCurrency\n        settlementPrice {\n          base\n          offset\n          currencyUnit\n          formattedAmount\n        }\n\n        initiationVia {\n          __typename\n          ... on InitiationViaIntraLedger {\n            counterPartyWalletId\n            counterPartyUsername\n          }\n          ... on InitiationViaLn {\n            paymentHash\n          }\n          ... on InitiationViaOnChain {\n            address\n          }\n        }\n        settlementVia {\n          __typename\n          ... on SettlementViaIntraLedger {\n            counterPartyWalletId\n            counterPartyUsername\n          }\n          ... on SettlementViaLn {\n            paymentSecret\n          }\n          ... on SettlementViaOnChain {\n            transactionHash\n          }\n        }\n      }\n    }\n  }\n"])));
++var transactionListFragment = (0, client_1.gql)(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  fragment TransactionList on TransactionConnection {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        __typename\n        id\n        status\n        direction\n        memo\n        createdAt\n\n        settlementAmount\n        settlementFee\n                settlementPrice {\n          base\n          offset\n          currencyUnit\n          formattedAmount\n        }\n\n        initiationVia {\n          __typename\n          ... on InitiationViaIntraLedger {\n            counterPartyWalletId\n            counterPartyUsername\n          }\n          ... on InitiationViaLn {\n            paymentHash\n          }\n          ... on InitiationViaOnChain {\n            address\n          }\n        }\n        settlementVia {\n          __typename\n          ... on SettlementViaIntraLedger {\n            counterPartyWalletId\n            counterPartyUsername\n          }\n          ... on SettlementViaLn {\n            paymentSecret\n          }\n          ... on SettlementViaOnChain {\n            transactionHash\n          }\n        }\n      }\n    }\n  }\n"], ["\n  fragment TransactionList on TransactionConnection {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        __typename\n        id\n        status\n        direction\n        memo\n        createdAt\n\n        settlementAmount\n        settlementFee\n                settlementPrice {\n          base\n          offset\n          currencyUnit\n          formattedAmount\n        }\n\n        initiationVia {\n          __typename\n          ... on InitiationViaIntraLedger {\n            counterPartyWalletId\n            counterPartyUsername\n          }\n          ... on InitiationViaLn {\n            paymentHash\n          }\n          ... on InitiationViaOnChain {\n            address\n          }\n        }\n        settlementVia {\n          __typename\n          ... on SettlementViaIntraLedger {\n            counterPartyWalletId\n            counterPartyUsername\n          }\n          ... on SettlementViaLn {\n            paymentSecret\n          }\n          ... on SettlementViaOnChain {\n            transactionHash\n          }\n        }\n      }\n    }\n  }\n"])));
+ exports.default = transactionListFragment;
+ var templateObject_1;
+diff --git a/node_modules/@galoymoney/client/dist/graphql/subscriptions/my-updates.js b/node_modules/@galoymoney/client/dist/graphql/subscriptions/my-updates.js
+index 3bf972a..b7db771 100644
+--- a/node_modules/@galoymoney/client/dist/graphql/subscriptions/my-updates.js
++++ b/node_modules/@galoymoney/client/dist/graphql/subscriptions/my-updates.js
+@@ -9,6 +9,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+ Object.defineProperty(exports, "__esModule", { value: true });
+ var client_1 = require("@apollo/client");
+ var me_fragment_1 = __importDefault(require("../fragments/me-fragment"));
+-var myUpdates = (0, client_1.gql)(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  subscription myUpdates($recentTransactions: Int = 5) {\n    myUpdates {\n      errors {\n        message\n      }\n      me {\n        ...Me\n      }\n      update {\n        type: __typename\n        ... on Price {\n          base\n          offset\n          currencyUnit\n          formattedAmount\n        }\n        ... on LnUpdate {\n          walletId\n          paymentHash\n          status\n        }\n        ... on OnChainUpdate {\n          walletId\n          txNotificationType\n          txHash\n          amount\n          displayCurrencyPerSat\n        }\n        ... on IntraLedgerUpdate {\n          walletId\n          txNotificationType\n          amount\n          displayCurrencyPerSat\n        }\n      }\n    }\n  }\n  ", "\n"], ["\n  subscription myUpdates($recentTransactions: Int = 5) {\n    myUpdates {\n      errors {\n        message\n      }\n      me {\n        ...Me\n      }\n      update {\n        type: __typename\n        ... on Price {\n          base\n          offset\n          currencyUnit\n          formattedAmount\n        }\n        ... on LnUpdate {\n          walletId\n          paymentHash\n          status\n        }\n        ... on OnChainUpdate {\n          walletId\n          txNotificationType\n          txHash\n          amount\n          displayCurrencyPerSat\n        }\n        ... on IntraLedgerUpdate {\n          walletId\n          txNotificationType\n          amount\n          displayCurrencyPerSat\n        }\n      }\n    }\n  }\n  ", "\n"])), me_fragment_1.default);
++var myUpdates = (0, client_1.gql)(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  subscription myUpdates($recentTransactions: Int = 5) {\n    myUpdates {\n      errors {\n        message\n      }\n      me {\n        ...Me\n      }\n      update {\n        type: __typename\n        ... on Price {\n          base\n          offset\n          currencyUnit\n          formattedAmount\n        }\n        ... on LnUpdate {\n                    paymentHash\n          status\n        }\n        ... on OnChainUpdate {\n                    txNotificationType\n          txHash\n          amount\n                  }\n        ... on IntraLedgerUpdate {\n                    txNotificationType\n          amount\n                  }\n      }\n    }\n  }\n  ", "\n"], ["\n  subscription myUpdates($recentTransactions: Int = 5) {\n    myUpdates {\n      errors {\n        message\n      }\n      me {\n        ...Me\n      }\n      update {\n        type: __typename\n        ... on Price {\n          base\n          offset\n          currencyUnit\n          formattedAmount\n        }\n        ... on LnUpdate {\n                    paymentHash\n          status\n        }\n        ... on OnChainUpdate {\n                    txNotificationType\n          txHash\n          amount\n                  }\n        ... on IntraLedgerUpdate {\n                    txNotificationType\n          amount\n                  }\n      }\n    }\n  }\n  ", "\n"])), me_fragment_1.default);
+ exports.default = myUpdates;
+ var templateObject_1;
+diff --git a/node_modules/@galoymoney/client/dist/utils/currencies.js b/node_modules/@galoymoney/client/dist/utils/currencies.js
+index 6823c78..bbf5bc3 100644
+--- a/node_modules/@galoymoney/client/dist/utils/currencies.js
++++ b/node_modules/@galoymoney/client/dist/utils/currencies.js
+@@ -1,16 +1,16 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.satsToBTC = exports.formatCurrencyAmount = exports.formatSats = exports.formatUsd = void 0;
+-var usdFormatter = new Intl.NumberFormat("en-US", {
++var usdFormatter = new Intl.NumberFormat("es-CR", {
+     style: "currency",
+-    currency: "USD",
++    currency: "CRC",
+     maximumFractionDigits: 2,
+ });
+ var formatUsd = function (value) {
+     return usdFormatter.format(value);
+ };
+ exports.formatUsd = formatUsd;
+-var satsFormatter = new Intl.NumberFormat("en-US", {
++var satsFormatter = new Intl.NumberFormat("es-CR", {
+     maximumFractionDigits: 0,
+ });
+ var formatSats = function (value) {

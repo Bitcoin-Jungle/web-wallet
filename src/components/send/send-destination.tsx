@@ -122,7 +122,7 @@ const SendDestination: FCT = ({ input, setInput }) => {
       return (
         <div className="amount-display">
           <div className="primary">
-            <SatFormat amount={input.satAmount || usdToSats(input.amount)} />
+            <SatFormat amount={input.satAmount || input.amount} />
           </div>
           <div className="converted">&#8776; {formatUsd(satsToUsd(input.amount))}</div>
         </div>

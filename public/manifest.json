@@ -1,0 +1,20 @@
+{
+  "short_name": "Bitcoin Jungle",
+  "name": "Bitcoin Jungle Wallet",
+  "icons": [
+    {
+      "src": "/images/favicon-300x300.png",
+      "type": "image/png",
+      "sizes": "384x384"
+    },
+    {
+      "src": "/images/favicon-150x150.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

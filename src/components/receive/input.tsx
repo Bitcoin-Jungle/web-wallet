@@ -143,13 +143,13 @@ const InvoiceInput: FCT = ({ input, setInput }) => {
           <div className="input-label">{translate("Set Amount")}</div>
           <div className="amount-input-form">
             <div className="currency-label">
-              {input.currency === "SATS" ? <Icon name="sat" /> : "$"}
+              {input.currency === "SATS" ? <Icon name="sat" /> : "₡"}
             </div>
             <FormattedNumberInput
               initValue={input.amount}
               onChange={handleAmountUpdate}
               placeholder={translate("Set invoice value in %{currency}", {
-                currency: input.currency,
+                currency: (input.currency === "USD" ? "CRC" : "BTC"),
               })}
             />
             <div className="toggle-currency link" onClick={toggleCurrency}>

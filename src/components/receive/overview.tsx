@@ -36,7 +36,7 @@ const InvoiceOverview: FCT = ({ input, setInput, toggleWallet }) => {
   }, [input.wallet, generateBtcAddress, input.layer])
 
   useEffect(() => {
-    if (satsToUsd && input.wallet.walletCurrency !== "USD") {
+    if (satsToUsd && input.wallet && input.wallet.walletCurrency !== "USD") {
       setInput((currInput) => ({
         ...currInput,
         usdAmount: satsToUsd(currInput.satAmount as number),

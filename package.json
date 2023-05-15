@@ -19,7 +19,8 @@
     "test:verify": "jest --coverage",
     "test": "jest",
     "tsc:check": "tsc --pretty --noEmit --skipLibCheck",
-    "codegen": "graphql-codegen --config codegen.yml"
+    "codegen": "graphql-codegen --config codegen.yml",
+    "postinstall": "patch-package"
   },
   "engines": {
     "node": "18"
@@ -79,6 +80,7 @@
     "mini-css-extract-plugin": "^2.6.1",
     "morgan": "^1.10.0",
     "normalize.css": "^8.0.1",
+    "patch-package": "^7.0.0",
     "postcss": "^8.4.14",
     "postcss-import": "^14.1.0",
     "postcss-loader": "^7.0.1",

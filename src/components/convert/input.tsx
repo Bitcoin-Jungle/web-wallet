@@ -252,7 +252,7 @@ const ConversionInput: React.FC<{
             <div className="content">
               <div className="input">
                 <div className="currency-label">
-                  {convertAmount.currency === "BTC" ? <Icon name="sat" /> : "$"}
+                  {convertAmount.currency === "BTC" ? <Icon name="sat" /> : "₡"}
                 </div>
                 <FormattedNumberInput
                   key={convertAmount.id}

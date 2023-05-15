@@ -3,7 +3,6 @@ import { KratosFlowData } from "kratos/index"
 
 import Contacts from "components/pages/contacts"
 import Home from "components/pages/home"
-import LoginEmail from "components/pages/login-email"
 import LoginPhone from "components/pages/login-phone"
 import Receive from "components/pages/receive"
 import Recovery from "components/pages/recovery"
@@ -77,7 +76,7 @@ const authRoutesDef = {
     title: `Create new account for ${config.walletName} Web Wallet`,
   },
   "/login": {
-    component: LoginEmail,
+    component: LoginPhone,
     title: `Login to ${config.walletName} Web Wallet`,
   },
   "/recovery": {

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import { translate, NoPropsFCT, useAppDispatcher } from "store/index"
 
@@ -24,7 +24,20 @@ export type ConvertedValuesType = null | { usd: number; sats?: number }
 
 const Receive: NoPropsFCT = () => {
   const dispatch = useAppDispatcher()
-  const { btcWallet, usdWallet } = useMainQuery()
+  const { btcWallet } = useMainQuery()
+
+  useEffect(() => {
+    setInput({
+      view: "overview",
+      layer: "lightning",
+      currency: "USD",
+      amount: 0,
+      satAmount: 0,
+      usdAmount: 0,
+      memo: "",
+      wallet: btcWallet,
+    })
+  }, [btcWallet])
 
   const [input, setInput] = useState<ReceiveScreenInput>({
     view: "overview",
@@ -44,7 +57,7 @@ const Receive: NoPropsFCT = () => {
       satAmount: 0,
       usdAmount: 0,
       memo: "",
-      wallet: input.wallet.walletCurrency === "BTC" ? usdWallet : btcWallet,
+      wallet: btcWallet,
       layer:
         input.wallet.walletCurrency === "BTC" && currInput.layer === "onchain"
           ? "lightning"

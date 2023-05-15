@@ -80,12 +80,7 @@ const Register: FCT = ({ flowData: flowDataProp }) => {
         try {
           if (!data.session) {
             throw new Error("Invalid session")
-          }
-          const syncStatus = await syncSession()
-          if (syncStatus instanceof Error) {
-            handleError(syncStatus)
-            return
-          }
+          }         
           history.push("/")
         } catch (err) {
           console.error(err)

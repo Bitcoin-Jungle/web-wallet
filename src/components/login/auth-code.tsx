@@ -4,7 +4,24 @@ import { Spinner } from "@galoymoney/react"
 
 import { config, translate, ajax, history, useAuthContext } from "store/index"
 
+import { gql } from "@apollo/client"
+
 import Icon from "components/icon"
+
+import {
+  useUserLoginMutation,
+} from "graphql/generated"
+
+gql`
+  mutation userLogin($input: UserLoginInput!) {
+    userLogin(input: $input) {
+      errors {
+        message
+      }
+      authToken
+    }
+  }
+`
 
 type FCT = React.FC<{ phoneNumber: string }>
 
@@ -13,16 +30,31 @@ const AuthCode: FCT = ({ phoneNumber }) => {
   const [errorMessage, setErrorMessage] = useState("")
   const { setAuthSession } = useAuthContext()
 
-  const submitLoginRequest = async (authCode: string) => {
-    setLoading(true)
-
-    const session = await ajax.post(config.galoyAuthEndpoint + "/login", {
-      phoneNumber,
-      authCode,
+  const [userLogin, { loading: createLoading }] =
+    useUserLoginMutation({
+      context: {
+        credentials: "omit",
+      },
     })
 
-    setLoading(false)
-    setAuthSession(session.identity ? { identity: session.identity } : null)
+
+  const submitLoginRequest = async (authCode: string) => {
+    const { data } = await userLogin({
+      variables: {
+        input: {
+          phone: phoneNumber,
+          code: authCode,
+        },
+      },
+    })
+
+    if (data && data.userLogin) {
+      if (data.userLogin.errors.length) {
+        alert("Error Logging In!")
+      }
+
+      setAuthSession(data.userLogin.authToken ? { identity: {token: data.userLogin.authToken } } : null)
+    }
     history.push("/")
   }
 

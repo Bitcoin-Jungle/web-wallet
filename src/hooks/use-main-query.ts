@@ -6,18 +6,19 @@ import { useMainQuery as useMainQueryGenerated } from "graphql/generated"
 
 // TODO: move away from big gql queries in the future
 gql`
-  query main($isAuthenticated: Boolean!, $recentTransactions: Int) {
+  query main($isAuthenticated: Boolean!, $recentTransactions: Int, $range: PriceGraphRange!) {
     globals {
       nodesIds
-      lightningAddressDomain
       __typename
     }
-    btcPrice {
-      base
-      offset
-      currencyUnit
-      formattedAmount
-      __typename
+    btcPriceList(range: $range) {
+      timestamp
+      price {
+        base
+        offset
+        currencyUnit
+        formattedAmount
+      }
     }
     me @include(if: $isAuthenticated) {
       ...Me
@@ -32,14 +33,14 @@ gql`
     defaultAccount {
       id
       defaultWalletId
-      transactions(first: $recentTransactions) {
-        ...TransactionList
-        __typename
-      }
       wallets {
         id
         balance
         walletCurrency
+        transactions(first: $recentTransactions) {
+          ...TransactionList
+          __typename
+        }
         __typename
       }
       __typename
@@ -65,7 +66,6 @@ gql`
         createdAt
         settlementAmount
         settlementFee
-        settlementCurrency
         settlementPrice {
           base
           offset
@@ -116,22 +116,23 @@ gql`
 type Language = "" | "en-US" | "es-SV"
 
 const useMainQuery = () => {
-  const { isAuthenticated } = useAuthContext()
+  const { isAuthenticated, authIdentity } = useAuthContext()
   const { defaultLanguage } = useAppState()
 
   const { data, refetch } = useMainQueryGenerated({
-    variables: { isAuthenticated, recentTransactions: 10 },
+    variables: { isAuthenticated, recentTransactions: 10, range: "ONE_DAY" },
     onCompleted: (completed) => {
       setLocale(completed?.me?.language ?? defaultLanguage)
     },
     context: {
-      credentials: isAuthenticated ? "include" : "omit",
+      credentials: "omit",
     },
   })
 
   const pubKey = data?.globals?.nodesIds?.[0] ?? ""
-  const lightningAddressDomain = data?.globals?.lightningAddressDomain
-  const btcPrice = data?.btcPrice ?? undefined
+  const lightningAddressDomain = "pay.bitcoinjungle.app"
+  // @ts-ignore
+  const btcPrice = data?.btcPriceList[data.btcPriceList.length - 1]?.price ?? undefined
 
   const me = data?.me
 
@@ -141,20 +142,11 @@ const useMainQuery = () => {
   const wallets = (data?.me?.defaultAccount?.wallets ?? []) as Array<GaloyGQL.Wallet>
   const defaultWalletId = data?.me?.defaultAccount?.defaultWalletId
   const defaultWallet = wallets?.find((wallet) => wallet?.id === defaultWalletId)
-
-  const btcWallet = me?.defaultAccount?.wallets?.find(
-    (wallet) => wallet?.__typename === "BTCWallet",
-  ) as GaloyGQL.BtcWallet
+  const btcWallet = me?.defaultAccount?.wallets[0] as GaloyGQL.BtcWallet
   const btcWalletId = btcWallet?.id
   const btcWalletBalance = isAuthenticated ? btcWallet?.balance ?? NaN : 0
 
-  const transactions = me?.defaultAccount?.transactions
-
-  const usdWallet = me?.defaultAccount?.wallets?.find(
-    (wallet) => wallet?.__typename === "UsdWallet",
-  ) as GaloyGQL.UsdWallet
-  const usdWalletId = usdWallet?.id
-  const usdWalletBalanceInCents = isAuthenticated ? usdWallet?.balance ?? NaN : 0
+  const transactions = me?.defaultAccount?.wallets[0]?.transactions
 
   const username = me?.username
   const phoneNumber = me?.phone
@@ -175,9 +167,9 @@ const useMainQuery = () => {
     btcWalletId,
     btcWalletBalance,
 
-    usdWallet,
-    usdWalletId,
-    usdWalletBalance: usdWalletBalanceInCents / 100,
+    usdWallet: undefined,
+    usdWalletId: null,
+    usdWalletBalance: 0,
 
     transactions,
 

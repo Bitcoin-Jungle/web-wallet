@@ -228,7 +228,7 @@ const SendAmountLabel: FCT = ({ input, setInput }) => {
         <div className="input-label">{translate("Amount")}</div>
         <div className="amount-input-form">
           <div className="currency-label">
-            {input.currency === "SATS" ? <Icon name="sat" /> : "$"}
+            {input.currency === "SATS" ? <Icon name="sat" /> : "₡"}
           </div>
           <FormattedNumberInput
             initValue={input.amount}
@@ -236,7 +236,7 @@ const SendAmountLabel: FCT = ({ input, setInput }) => {
             disabled={input.fixedAmount || showWalletPicker}
             autoComplete="off"
             placeholder={translate("Set value to send in %{currency}", {
-              currency: input.currency,
+              currency: (input.currency === "USD" ? "CRC" : input.currency),
             })}
           />
           {!input.fixedAmount && fromWallet?.walletCurrency === "BTC" && (

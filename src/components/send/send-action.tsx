@@ -35,7 +35,6 @@ import { formatSats, formatUsd } from "@galoymoney/client"
 
 export type SendActionProps = SendScreenInput & {
   btcWalletId: string
-  usdWalletId: string | undefined
   reset: () => void
 }
 
@@ -46,7 +45,7 @@ type FCT = React.FC<{
 
 const SendAction: FCT = ({ children, input }) => {
   const dispatch = useAppDispatcher()
-  const { btcWalletId, btcWalletBalance, usdWalletId, usdWalletBalance } = useMainQuery()
+  const { btcWalletId, btcWalletBalance } = useMainQuery()
 
   const reset = useCallback(() => {
     dispatch({ type: "navigate", path: "/send" })
@@ -82,19 +81,6 @@ const SendAction: FCT = ({ children, input }) => {
     )
   }
 
-  if (
-    input.fromWallet?.walletCurrency === "USD" &&
-    input.usdAmount &&
-    input.usdAmount > usdWalletBalance
-  ) {
-    return (
-      <div className="error">
-        {translate("Payment amount exceeds balance of %{balance}", {
-          balance: formatUsd(usdWalletBalance),
-        })}
-      </div>
-    )
-  }
 
   if (children) {
     return <>{children}</>
@@ -118,7 +104,6 @@ const SendAction: FCT = ({ children, input }) => {
   const sendActionProps = {
     ...input,
     btcWalletId,
-    usdWalletId,
     reset,
   }
 

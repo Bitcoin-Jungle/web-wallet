@@ -67,16 +67,10 @@ export const AuthProvider: FCT = ({ children, galoyClient, authIdentity }) => {
   }, [])
 
   const syncSession = useCallback(async () => {
-    const session = await ajax.post(config.authEndpoint)
-
-    if (!session) {
-      return new Error("INVALID_AUTH_TOKEN_RESPONSE")
-    }
-
-    setAuth(session.identity ? session : null)
-    dispatch({ type: "kratos-login", authIdentity: session.identity })
+    setAuth(authSession?.identity ? authSession : null)
+    dispatch({ type: "kratos-login", authIdentity: authSession?.identity ? authSession.identity : undefined })
     return true
-  }, [dispatch, setAuth])
+  }, [dispatch, setAuth, authSession])
 
   const handleError = useErrorHandler()
   const client = useMemo(() => {
@@ -86,29 +80,30 @@ export const AuthProvider: FCT = ({ children, galoyClient, authIdentity }) => {
     }
     return createClient({
       onError: ({ graphQLErrors, networkError }) => {
-        if (networkError && networkError.message.includes("Failed to fetch")) {
-          fetch(config.galoyAuthEndpoint + "/clearCookies", {
-            method: "GET",
-            redirect: "follow",
-            credentials: "include",
-          }).finally(() => {
-            localStorage.clear()
-            sessionStorage.clear()
-            if (!window.location.pathname.includes("login")) {
-              window.location.replace("/login")
-            }
-          })
-        }
-        if (graphQLErrors) {
-          console.debug("[GraphQL errors]:", graphQLErrors)
-        }
+        // if (networkError && networkError.message.includes("Failed to fetch")) {
+        //   fetch(config.galoyAuthEndpoint + "/clearCookies", {
+        //     method: "GET",
+        //     redirect: "follow",
+        //     credentials: "include",
+        //   }).finally(() => {
+        //     localStorage.clear()
+        //     sessionStorage.clear()
+        //     if (!window.location.pathname.includes("login")) {
+        //       window.location.replace("/login")
+        //     }
+        //   })
+        // }
+        // if (graphQLErrors) {
+        //   console.debug("[GraphQL errors]:", graphQLErrors)
+        // }
         if (networkError) {
           console.debug("[Network error]:", networkError)
           handleError(networkError)
         }
       },
+      authToken: authSession?.identity.token,
     })
-  }, [galoyClient, handleError])
+  }, [galoyClient, handleError, authSession])
 
   return (
     <AuthContext.Provider
