@@ -19,13 +19,13 @@ self.addEventListener('install', event => {
 });
 
 // Cache and return requests
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    fetch(event.request).catch(function() {
-        return caches.match(event.request)
-    })
-  )
-});
+// self.addEventListener('fetch', event => {
+//   event.respondWith(
+//     fetch(event.request).catch(function() {
+//         return caches.match(event.request)
+//     })
+//   )
+// });
 
 // Update a service worker
 self.addEventListener('activate', event => {

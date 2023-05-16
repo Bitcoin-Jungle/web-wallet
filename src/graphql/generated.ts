@@ -984,6 +984,13 @@ export type MeFragment = { readonly __typename: 'User', readonly id: string, rea
 
 export type TransactionListFragment = { readonly __typename: 'TransactionConnection', readonly pageInfo: { readonly __typename: 'PageInfo', readonly hasNextPage: boolean, readonly hasPreviousPage: boolean, readonly startCursor?: string | null, readonly endCursor?: string | null }, readonly edges?: ReadonlyArray<{ readonly __typename: 'TransactionEdge', readonly cursor: string, readonly node?: { readonly __typename: 'Transaction', readonly id: string, readonly status: TxStatus, readonly direction: TxDirection, readonly memo?: string | null, readonly createdAt: number, readonly settlementAmount: number, readonly settlementFee: number, readonly settlementPrice: { readonly __typename: 'Price', readonly base: number, readonly offset: number, readonly currencyUnit: ExchangeCurrencyUnit, readonly formattedAmount: string }, readonly initiationVia: { readonly __typename: 'InitiationViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null } | { readonly __typename: 'InitiationViaLn', readonly paymentHash: string } | { readonly __typename: 'InitiationViaOnChain', readonly address: string }, readonly settlementVia: { readonly __typename: 'SettlementViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null } | { readonly __typename: 'SettlementViaLn', readonly paymentSecret?: string | null } | { readonly __typename: 'SettlementViaOnChain', readonly transactionHash: string } } | null } | null> | null };
 
+export type DeviceNotificationTokenCreateMutationVariables = Exact<{
+  deviceToken: Scalars['String'];
+}>;
+
+
+export type DeviceNotificationTokenCreateMutation = { readonly __typename: 'Mutation', readonly deviceNotificationTokenCreate: { readonly __typename: 'SuccessPayload', readonly success?: boolean | null, readonly errors: ReadonlyArray<{ readonly __typename: 'InputError', readonly message: string } | { readonly __typename: 'PaymentError', readonly message: string }> } };
+
 export const TransactionListFragmentDoc = gql`
     fragment TransactionList on TransactionConnection {
   pageInfo {
@@ -1281,3 +1288,39 @@ export function useMainLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MainQ
 export type MainQueryHookResult = ReturnType<typeof useMainQuery>;
 export type MainLazyQueryHookResult = ReturnType<typeof useMainLazyQuery>;
 export type MainQueryResult = Apollo.QueryResult<MainQuery, MainQueryVariables>;
+export const DeviceNotificationTokenCreateDocument = gql`
+    mutation deviceNotificationTokenCreate($deviceToken: String!) {
+  deviceNotificationTokenCreate(input: {deviceToken: $deviceToken}) {
+    errors {
+      message
+    }
+    success
+  }
+}
+    `;
+export type DeviceNotificationTokenCreateMutationFn = Apollo.MutationFunction<DeviceNotificationTokenCreateMutation, DeviceNotificationTokenCreateMutationVariables>;
+
+/**
+ * __useDeviceNotificationTokenCreateMutation__
+ *
+ * To run a mutation, you first call `useDeviceNotificationTokenCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeviceNotificationTokenCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deviceNotificationTokenCreateMutation, { data, loading, error }] = useDeviceNotificationTokenCreateMutation({
+ *   variables: {
+ *      deviceToken: // value for 'deviceToken'
+ *   },
+ * });
+ */
+export function useDeviceNotificationTokenCreateMutation(baseOptions?: Apollo.MutationHookOptions<DeviceNotificationTokenCreateMutation, DeviceNotificationTokenCreateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeviceNotificationTokenCreateMutation, DeviceNotificationTokenCreateMutationVariables>(DeviceNotificationTokenCreateDocument, options);
+      }
+export type DeviceNotificationTokenCreateMutationHookResult = ReturnType<typeof useDeviceNotificationTokenCreateMutation>;
+export type DeviceNotificationTokenCreateMutationResult = Apollo.MutationResult<DeviceNotificationTokenCreateMutation>;
+export type DeviceNotificationTokenCreateMutationOptions = Apollo.BaseMutationOptions<DeviceNotificationTokenCreateMutation, DeviceNotificationTokenCreateMutationVariables>;

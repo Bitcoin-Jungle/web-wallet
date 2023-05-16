@@ -4,6 +4,7 @@ import express from "express"
 import morgan from "morgan"
 import serialize from "serialize-javascript"
 import rateLimit from "express-rate-limit"
+import compression from "compression"
 
 import { config, helmetConfig } from "store/index"
 
@@ -11,6 +12,7 @@ import apiRouter from "server/api-router"
 import ssrRouter from "server/ssr-router"
 
 const app = express()
+app.use(compression())
 app.enable("trust proxy")
 app.use(morgan("common"))
 app.use(express.static("public"))
@@ -57,6 +59,6 @@ app.use(limiter)
 app.use("/api", apiRouter)
 app.use("/", ssrRouter)
 
-app.listen(config.port as number, config.host as string, () => {
+app.listen(config.port as number, () => {
   console.info(`Running on http://${config.host}:${config.port}...`)
 })

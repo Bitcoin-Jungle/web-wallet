@@ -71,6 +71,7 @@ const SettingsPasswordUpdate: FCT = ({ flowData: flowDataProp }) => {
     kratos
       .initializeSelfServiceSettingsFlowForBrowsers(
         returnTo ? String(returnTo) : undefined,
+        // @ts-ignore
         { withCredentials: true },
       )
       .then(({ data }) => setFlowData(data))

@@ -8,7 +8,11 @@ RUN apk update && apk add git
 
 COPY  ./*.json ./yarn.lock ./
 
+COPY patches ./patches
+
 RUN yarn install --frozen-lockfile --production
+
+RUN yarn postinstall
 
 COPY ./src ./src
 COPY ./*.js ./

@@ -1,6 +1,9 @@
 const path = require("path")
 const fs = require("fs")
 const webpack = require("webpack")
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const CompressionPlugin = require("compression-webpack-plugin");
+
 
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 
@@ -71,8 +74,11 @@ const config = (env) => ({
         },
       },
     },
+    minimizer: [new UglifyJsPlugin()],
   },
   plugins: [
+    new CompressionPlugin(),
+    
     new webpack.ProvidePlugin({ Buffer: ["buffer", "Buffer"] }),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(env.dev ? "development" : "production"),
