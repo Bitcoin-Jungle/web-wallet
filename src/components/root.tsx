@@ -8,7 +8,6 @@ import { setLocale, GwwContext, GwwStateType, history, mainReducer } from "store
 import { KratosFlowData } from "kratos/index"
 
 import { AuthProvider } from "components/auth-provider"
-import { FirebaseProvider } from "components/firebase-provider"
 import RootComponent from "components/root-component"
 
 type RootFCT = React.FC<{ GwwState: GwwStateType }>
@@ -38,16 +37,14 @@ const Root: RootFCT = ({ GwwState }) => {
 
   return (
     <AuthProvider authIdentity={state.authIdentity}>
-      <FirebaseProvider>
-        <GwwContext.Provider value={{ state, dispatch }}>
-          <RootComponent
-            key={state.key}
-            path={state.path}
-            flowData={state.flowData}
-            {...state.props}
-          />
-        </GwwContext.Provider>
-      </FirebaseProvider>
+      <GwwContext.Provider value={{ state, dispatch }}>
+        <RootComponent
+          key={state.key}
+          path={state.path}
+          flowData={state.flowData}
+          {...state.props}
+        />
+      </GwwContext.Provider>
     </AuthProvider>
   )
 }
@@ -66,11 +63,9 @@ export const SSRRoot: SSRRootFCT = ({ client, GwwState }) => {
 
   return (
     <AuthProvider galoyClient={client} authIdentity={state.authIdentity}>
-      <FirebaseProvider>
-        <GwwContext.Provider value={{ state, dispatch }}>
-          <RootComponent path={state.path} flowData={state.flowData} {...state.props} />
-        </GwwContext.Provider>
-      </FirebaseProvider>
+      <GwwContext.Provider value={{ state, dispatch }}>
+        <RootComponent path={state.path} flowData={state.flowData} {...state.props} />
+      </GwwContext.Provider>
     </AuthProvider>
   )
 }
