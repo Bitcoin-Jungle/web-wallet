@@ -1,8 +1,8 @@
 diff --git a/node_modules/@galoymoney/react/dist/components/formatted-number-input.js b/node_modules/@galoymoney/react/dist/components/formatted-number-input.js
-index 208eefa..a794e32 100644
+index 208eefa..7dbda0d 100644
 --- a/node_modules/@galoymoney/react/dist/components/formatted-number-input.js
 +++ b/node_modules/@galoymoney/react/dist/components/formatted-number-input.js
-@@ -42,7 +42,7 @@ exports.FormattedNumberInput = void 0;
+@@ -42,13 +42,14 @@ exports.FormattedNumberInput = void 0;
  var jsx_runtime_1 = require("react/jsx-runtime");
  var react_1 = require("react");
  var use_debounce_1 = require("use-debounce");
@@ -11,6 +11,28 @@ index 208eefa..a794e32 100644
  var parseInputValue = function (inputValue) {
      if (inputValue === "") {
          return { numberValue: "", formattedValue: "" };
+     }
+-    var numberValue = Number(inputValue.replace(/[^0-9.]/gu, ""));
+-    var inputValueIncomplete = inputValue.match(/(\.[1-9]?0+|\.)$/u);
++    var numberValue = Number(inputValue.replace(/[\s.]/gu, ""));
++    // var inputValueIncomplete = inputValue.match(/(\.[1-9]?0+|\.)$/u);
++    var inputValueIncomplete = false
+     var formattedValue = 
+     // Allaw fixing invalid input and typing the decimal part at the end
+     Number.isNaN(numberValue) || inputValueIncomplete
+@@ -85,9 +86,9 @@ var FormattedNumberInputComponent = (0, react_1.forwardRef)(function (_a, ref) {
+     }, [onDebouncedChange, input.debouncedValue]);
+     var handleOnChange = function (event) {
+         // Block more than 2 decmial numbers or points in the input
+-        if (event.target.value.match(/(\.[0-9]{3,}$|\..*\.)/u)) {
+-            return;
+-        }
++        // if (event.target.value.match(/(\.[0-9]{3,}$|\..*\.)/u)) {
++        //     return;
++        // }
+         var _a = parseInputValue(event.target.value), numberValue = _a.numberValue, formattedValue = _a.formattedValue;
+         if (onChange) {
+             onChange(numberValue);
 diff --git a/node_modules/@galoymoney/react/dist/components/sat-format.js b/node_modules/@galoymoney/react/dist/components/sat-format.js
 index fde6766..f321ddc 100644
 --- a/node_modules/@galoymoney/react/dist/components/sat-format.js
