@@ -36,16 +36,6 @@ const firebaseConfig = {
   measurementId: "G-K06EMBK41L"
 }
 
-const app = initializeApp(firebaseConfig)
-const messaging = getMessaging(app)
-
-onMessage(messaging, function(payload) {
-  console.log(
-      "[firebase-messaging-sw.js] Received foreground message ",
-      payload,
-  );
-})
-
 gql`
   query btcPriceList($range: PriceGraphRange!) {
     btcPriceList(range: $range) {
@@ -64,36 +54,6 @@ const Home: NoPropsFCT = () => {
   const [ pushToken, setPushToken ] = useState("")
 
   const [deviceNotificationTokenCreate] = useDeviceNotificationTokenCreateMutation()
-
-  const getPushToken = () => {
-    getToken(
-      messaging, 
-      {
-        vapidKey: "BJ8Il2h_dadKP74G6fkavY_HABuojg0mmDJdKszQYIvI2Da35NZRHX5esj3wRs5QYx0HLtjIhwB6_tjfno9GP5g",
-      }
-    )
-    .then((currentToken) => {
-      if (currentToken) {
-        console.log('i have tokenz!', currentToken)
-        // Send the token to your server and update the UI if necessary
-        // ...
-        setPushToken(currentToken)
-      } else {
-        Notification.requestPermission().then((permission) => {
-          if (permission === 'granted') {
-            console.log('Notification permission granted.');
-            getPushToken()
-            
-          } else {
-            console.log('Unable to get permission to notify.');
-          }
-        });
-      }
-    }).catch((err) => {
-      console.log('An error occurred while retrieving token. ', err);
-      // ...
-    })
-  }
 
   useEffect(() => {
     if(pushToken.length && isAuthenticated) {
@@ -114,7 +74,49 @@ const Home: NoPropsFCT = () => {
   }, [pushToken, isAuthenticated])
 
   useEffect(() => {
-    getPushToken()
+    if(typeof navigator !== 'undefined') {
+      const app = initializeApp(firebaseConfig)
+      const messaging = getMessaging(app)
+
+      onMessage(messaging, function(payload) {
+        console.log(
+          "[firebase-messaging-sw.js] Received foreground message ",
+          payload,
+        );
+      })
+
+      const getPushToken = () => {
+        getToken(
+          messaging, 
+          {
+            vapidKey: "BJ8Il2h_dadKP74G6fkavY_HABuojg0mmDJdKszQYIvI2Da35NZRHX5esj3wRs5QYx0HLtjIhwB6_tjfno9GP5g",
+          }
+        )
+        .then((currentToken) => {
+          if (currentToken) {
+            console.log('i have tokenz!', currentToken)
+            // Send the token to your server and update the UI if necessary
+            // ...
+            setPushToken(currentToken)
+          } else {
+            Notification.requestPermission().then((permission) => {
+              if (permission === 'granted') {
+                console.log('Notification permission granted.');
+                getPushToken()
+                
+              } else {
+                console.log('Unable to get permission to notify.');
+              }
+            });
+          }
+        }).catch((err) => {
+          console.log('An error occurred while retrieving token. ', err);
+          // ...
+        })
+      }
+
+      getPushToken()
+    }
   }, [isAuthenticated])
 
   return (
