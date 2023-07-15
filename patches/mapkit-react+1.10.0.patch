@@ -1,0 +1,19 @@
+diff --git a/node_modules/mapkit-react/package.json b/node_modules/mapkit-react/package.json
+index ff8fd2a..47265d4 100644
+--- a/node_modules/mapkit-react/package.json
++++ b/node_modules/mapkit-react/package.json
+@@ -20,12 +20,12 @@
+     "build-storybook": "build-storybook",
+     "prepublishOnly": "npm run build"
+   },
+-  "main": "dist/mapkit-react.umd.js",
++  "main": "dist/mapkit-react.umd.cjs",
+   "module": "dist/mapkit-react.js",
+   "exports": {
+     ".": {
+       "import": "./dist/mapkit-react.js",
+-      "require": "./dist/mapkit-react.umd.js"
++      "require": "./dist/mapkit-react.umd.cjs"
+     }
+   },
+   "types": "dist/index.d.ts",
