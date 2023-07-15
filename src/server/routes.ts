@@ -2,6 +2,7 @@ import { config } from "store/index"
 import { KratosFlowData } from "kratos/index"
 
 import Contacts from "components/pages/contacts"
+import MapScreen from "components/pages/map"
 import Home from "components/pages/home"
 import LoginPhone from "components/pages/login-phone"
 import Receive from "components/pages/receive"
@@ -38,6 +39,10 @@ const appRoutesDef = {
   "/contacts": {
     component: Contacts,
     title: "Contacts",
+  },
+  "/map": {
+    component: MapScreen,
+    title: "Map",
   },
   "/transactions": {
     component: Transactions,

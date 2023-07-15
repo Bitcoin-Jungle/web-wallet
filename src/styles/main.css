@@ -653,6 +653,103 @@ button {
   }
 }
 
+.map {
+  width: 100%;
+  height: 80vh;
+
+  h5 {
+    margin: 0;
+    padding: 10px;
+  }
+
+  .map-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 8px;
+  }
+
+  .map-overlay-top {
+    top: 0;
+    bottom: auto;
+  }
+
+  .map-overlay button {
+    display: block;
+    background-color: white;
+    width: 100%;
+    height: 32px;
+    appearance: none;
+    border: 0;
+    border-radius: 8px;
+
+    font-size: 1rem;
+    font-family: inherit;
+    font-weight: 500;
+    letter-spacing: -.02em;
+  }
+
+  .map-overlay button:active {
+    background-color: #f1f1f1;
+  }
+
+  .map-overlay-box {
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(255, 255, 255, .6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .15);
+  }
+
+  .map-overlay-box label {
+    display: flex;
+    gap: .3em;
+  }
+
+  .map-overlay-options {
+    height: auto;
+    flex-wrap: wrap;
+    padding: 20px;
+  }
+
+  .map-overlay-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    height: auto;
+  }
+
+  .map-overlay-inputs .form-group {
+    flex: 1;
+    min-width: 150px;
+  }
+}
+
+.problem-container {
+  display: inline;
+  float: right;
+  margin-right: 5px;
+  color: white;
+  background-color: red;
+  border-radius: 5px; 
+  font-size: 12px;    
+  margin-bottom: 5px;      
+}
+
+.problem-container a {
+  padding: 5px;
+  color: white;
+
+  display: initial;
+}
 .settings {
   .setting {
     display: flex;

@@ -3,6 +3,20 @@ import express from "express"
 import { handleWhoAmI } from "kratos/index"
 import { Request, Response } from "express-serve-static-core"
 
+const jwt = require('jsonwebtoken')
+
+let origin = ""
+
+if(process.env.NODE_ENV === "production") {
+  origin = `https://${process.env.HOST}`
+} else {
+  origin = `http://${process.env.HOST}:${process.env.PORT}`
+}
+
+const privatekey = (process.env.APPLE_MAPS_KEY ? process.env.APPLE_MAPS_KEY.replace(/\\n/gm, '\n') : "")
+const keyid = process.env.MAPS_KEY_ID;
+const issuer = process.env.APPLE_TEAM_ID;
+
 const apiRouter = express.Router({ caseSensitive: true })
 
 apiRouter.post("/login", async (req: Request, res: Response) => {
@@ -33,6 +47,19 @@ apiRouter.post("/login", async (req: Request, res: Response) => {
       .status(500)
       .send({ error: err instanceof Error ? err.message : "Something went wrong" })
   }
+})
+
+apiRouter.get('/token', (req, res) => {
+  const token = jwt.sign({
+    origin
+  }, privatekey, {
+    algorithm: 'ES256',
+    expiresIn: "1d",
+    keyid,
+    issuer,
+  })
+
+  return res.status(200).send(token)
 })
 
 export default apiRouter

@@ -18,6 +18,7 @@ type Page =
   | "send-bitcoin"
   | "receive-bitcoin"
   | "contacts"
+  | "map"
   | "transactions"
   | "settings"
 
@@ -107,6 +108,11 @@ const Header: FCT = ({ page }) => {
           <Link to="/contacts">
             <Icon name="people" />
             {translate("Contacts")}
+          </Link>
+
+          <Link to="/map">
+            <Icon name="world" />
+            Map
           </Link>
 
           <Link to="/settings">
