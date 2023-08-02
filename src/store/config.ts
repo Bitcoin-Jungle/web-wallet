@@ -82,6 +82,8 @@ export const config: configType = isBrowser
       kratosFeatureFlag: Boolean(process.env.KRATOS_FEATURE_FLAG === "true" || false),
       kratosBrowserUrl: process.env.KRATOS_BROWSER_URL as string,
       galoyAuthEndpoint: process.env.GALOY_AUTH_ENDPOINT as string,
+
+      ordersBaseUrl: process.env.ORDERS_BASE_URL as string,
     }
 
 const publicConfigKeys = [
@@ -95,6 +97,7 @@ const publicConfigKeys = [
   "kratosFeatureFlag",
   "kratosBrowserUrl",
   "galoyAuthEndpoint",
+  "ordersBaseUrl",
 ] as const
 
 export const publicConfig = Object.fromEntries(

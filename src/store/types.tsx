@@ -17,6 +17,7 @@ export type GwwConfigType = {
   kratosFeatureFlag: boolean
   kratosBrowserUrl: string
   galoyAuthEndpoint: string
+  ordersBaseUrl: string
 }
 
 declare global {

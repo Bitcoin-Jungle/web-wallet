@@ -3,6 +3,7 @@ import { KratosFlowData } from "kratos/index"
 
 import Contacts from "components/pages/contacts"
 import MapScreen from "components/pages/map"
+import SinpeScreen from "components/pages/sinpe"
 import Home from "components/pages/home"
 import LoginPhone from "components/pages/login-phone"
 import Receive from "components/pages/receive"
@@ -43,6 +44,10 @@ const appRoutesDef = {
   "/map": {
     component: MapScreen,
     title: "Map",
+  },
+  "/sinpe": {
+    component: SinpeScreen,
+    title: "SINPE Móvil",
   },
   "/transactions": {
     component: Transactions,

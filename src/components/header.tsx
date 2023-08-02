@@ -19,6 +19,7 @@ type Page =
   | "receive-bitcoin"
   | "contacts"
   | "map"
+  | "sinpe"
   | "transactions"
   | "settings"
 
@@ -113,6 +114,11 @@ const Header: FCT = ({ page }) => {
           <Link to="/map">
             <Icon name="world" />
             Map
+          </Link>
+
+          <Link to="/sinpe">
+            <Icon name="transfer" />
+            SINPE Móvil
           </Link>
 
           <Link to="/settings">

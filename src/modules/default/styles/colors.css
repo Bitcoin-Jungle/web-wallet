@@ -1,6 +1,6 @@
 @media (prefers-color-scheme: light) {
   :root {
-    --color-bg: #f9f9f9;
+    --color-bg: #e6ebef;
     --color-light-bg: #fdfdfd;
     --color-dark-bg: #ededed;
     --color-menu-bg: #f2f2f2;
@@ -55,7 +55,7 @@
 }
 
 body.light {
-  --color-bg: #f9f9f9;
+  --color-bg: #e6ebef;
   --color-light-bg: #fdfdfd;
   --color-dark-bg: #ededed;
   --color-menu-bg: #f2f2f2;
