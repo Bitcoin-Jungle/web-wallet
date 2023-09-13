@@ -14,6 +14,7 @@ const SinpeScreen: NoPropsFCT = () => {
   const dispatch = useAppDispatcher()
   const { btcWalletBalance, pubKey, username, phoneNumber, language, btcWallet, refetch } = useMainQuery()
   const [ initialLoad, setInitialLoad ] = useState(true)
+  const [ mySatBalance, setMySatBalance ] = useState(0)
   const { satsToUsd } = useMyUpdates()
   const [ createInvoice ] = useMutation.lnInvoiceCreate()
   const [ sendPayment ] = useMutation.lnInvoicePaymentSend({
@@ -167,6 +168,7 @@ const SinpeScreen: NoPropsFCT = () => {
 
   useEffect(() => {
     setTimeout(() => {
+      setMySatBalance(btcWalletBalance)
       setInitialLoad(false)
     }, 2000)
   }, [])
@@ -188,7 +190,7 @@ const SinpeScreen: NoPropsFCT = () => {
         <iframe 
           style={{width: "100%", height: "80vh", border: "none"}} 
           // @ts-ignore
-          src={`${config.ordersBaseUrl}?key=E4WE5GgDr6g8HFyS4K4m5rdJ&fromBJ=true&phone=${encodeURIComponent(phoneNumber)}&username=${encodeURIComponent(username)}&lang=${language}`}
+          src={`${config.ordersBaseUrl}?key=E4WE5GgDr6g8HFyS4K4m5rdJ&fromBJ=true&phone=${encodeURIComponent(phoneNumber)}&username=${encodeURIComponent(username)}&lang=${language}&satBalance=${mySatBalance}`}
         >    
         </iframe>
       : 
