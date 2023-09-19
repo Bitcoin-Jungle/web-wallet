@@ -108,7 +108,7 @@ const SinpeScreen: NoPropsFCT = () => {
       const errs = data?.lnInvoicePaymentSend?.errors
       handlePaymentReturn(status, errs)
     } catch(e) {
-      console.log(e)
+      console.log('payLightning catch', e)
       handlePaymentError(e)
     }
   }
@@ -117,13 +117,10 @@ const SinpeScreen: NoPropsFCT = () => {
   const handlePaymentReturn = (status: string | null | undefined, errors: Array | undefined) => {  
     postMessageToIframe({action: "toggleLoadingOff"})
     
-    if (status === "SUCCESS") {
+    if (status === "SUCCESS" || status === "PENDING" || status === "ALREADY_PAID") {
       setTimeout(() => {
         postMessageToIframe({action: "submitOrder"})
       }, 250)
-
-    } else if (status === "PENDING") {
-      console.log("pending...")
     } else {
       let errorMessage = ''
       if (errors && Array.isArray(errors)) {
@@ -138,8 +135,9 @@ const SinpeScreen: NoPropsFCT = () => {
   }
 
   const handlePaymentError = (error: string) => {
-   alert("An unexpected error has occurred.")
-   postMessageToIframe({action: "resetTimestamp"})
+   console.log('handlePaymentError', error)
+   // alert("An unexpected error has occurred.")
+   // postMessageToIframe({action: "resetTimestamp"})
   }
 
   useEffect(() => {
@@ -173,7 +171,7 @@ const SinpeScreen: NoPropsFCT = () => {
     }, 2000)
   }, [])
 
-  if(!username) {
+  if(!username && !initialLoad) {
     return (
       <div className="sinpe">
         <Header page="sinpe" />
