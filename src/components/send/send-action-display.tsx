@@ -12,10 +12,30 @@ type FeeAmount = {
   currency: "CENTS" | "SATS"
 }
 
-type FeeDisplayFCT = React.FC<{ amount: FeeAmount | undefined }>
+type FeeDisplayFCT = React.FC<{ 
+  amount: FeeAmount | undefined 
+  targetConfirmations: number | undefined
+  setTargetConfirmations: any | undefined
 
-const FeeDisplay: FeeDisplayFCT = ({ amount }) => {
+}>
+
+const FeeDisplay: FeeDisplayFCT = ({ amount, targetConfirmations, setTargetConfirmations }) => {
   const { satsToUsd } = useMyUpdates()
+
+  const getEstimatedWaitTime = () => {
+    if(!targetConfirmations) {
+      return ''
+    }
+
+    if(targetConfirmations === 1) {
+      return `~10 minutes`
+    }
+
+    const numHours = Math.floor(targetConfirmations / 6)
+
+    return `~${numHours} hours`
+  }
+
   if (amount?.amount === undefined) {
     return null
   }
@@ -23,18 +43,27 @@ const FeeDisplay: FeeDisplayFCT = ({ amount }) => {
     <div className="fee-amount">
       <div className="label">Fee</div>
       <div className="content">
-        {amount.currency === "SATS" ? (
-          <>
-            <SatFormat amount={amount.amount} />
-            {satsToUsd && amount.amount > 0 && (
-              <div className="fee-usd-amount small">
-                &#8776; {formatUsd(satsToUsd(amount.amount))}
-              </div>
-            )}
-          </>
-        ) : (
-          <div>{formatUsd(amount.amount / 100)}</div>
-        )}
+        <div>
+          {amount.currency === "SATS" ? (
+            <>
+              <SatFormat amount={amount.amount} />
+              {satsToUsd && amount.amount > 0 && (
+                <div className=" small">
+                  &#8776; {formatUsd(satsToUsd(amount.amount))}
+                </div>
+              )}
+            </>
+          ) : (
+            <div>{formatUsd(amount.amount / 100)}</div>
+          )}
+          {targetConfirmations &&
+            <div>
+              <input type="range" min="1" max="40" step="5" value={targetConfirmations} onChange={setTargetConfirmations} />
+              <br />
+              <span>Estimated Wait Time: {getEstimatedWaitTime()}</span>
+            </div>
+          }
+        </div>
       </div>
     </div>
   )
@@ -60,6 +89,8 @@ type SendActionDisplayFCT = React.FC<{
   feeAmount: FeeAmount | undefined
   reset: () => void
   handleSend: (event: MouseEvent<HTMLButtonElement>) => void
+  targetConfirmations?: number | undefined
+  setTargetConfirmations?: any | undefined
 }>
 
 const SendActionDisplay: SendActionDisplayFCT = ({
@@ -69,7 +100,15 @@ const SendActionDisplay: SendActionDisplayFCT = ({
   feeAmount,
   reset,
   handleSend,
+  targetConfirmations,
+  setTargetConfirmations,
 }) => {
+
+  const handleChange = (e: any) => {
+    setTargetConfirmations(parseInt(e.target.value))
+
+  }
+
   if (error) {
     return <div className="error">{error}</div>
   }
@@ -85,7 +124,7 @@ const SendActionDisplay: SendActionDisplayFCT = ({
 
   return (
     <>
-      {feeAmount !== undefined && <FeeDisplay amount={feeAmount} />}
+      {feeAmount !== undefined && <FeeDisplay amount={feeAmount} targetConfirmations={targetConfirmations} setTargetConfirmations={handleChange} />}
       <button onClick={handleSend} disabled={loading}>
         {translate("Send Payment")} {loading && <Spinner size="small" />}
       </button>

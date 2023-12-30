@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@galoymoney/client"
-import { MouseEvent } from "react"
+import { MouseEvent, useState } from "react"
 
 import SendActionDisplay from "components/send/send-action-display"
 import { SendActionProps } from "components/send/send-action"
@@ -14,6 +14,8 @@ type FCT = React.FC<SendOnChainActionProps>
 
 const SendOnChainAction: FCT = (props) => {
   const { refetch } = useMainQuery()
+
+  const [targetConfirmations, setTargetConfirmations] = useState<number>(1)
 
   const [sendPayment, { loading, data, errorsMessage: paymentError }] =
     useMutation.onChainPaymentSend({
@@ -31,6 +33,7 @@ const SendOnChainAction: FCT = (props) => {
       walletId: props.btcWalletId,
       address: props.address,
       amount: props.satAmount,
+      targetConfirmations: targetConfirmations,
     },
   })
 
@@ -61,6 +64,8 @@ const SendOnChainAction: FCT = (props) => {
       feeAmount={feeAmount}
       reset={props.reset}
       handleSend={handleSend}
+      targetConfirmations={targetConfirmations}
+      setTargetConfirmations={setTargetConfirmations}
     />
   )
 }
