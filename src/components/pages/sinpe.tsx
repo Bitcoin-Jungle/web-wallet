@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { config, NoPropsFCT, useAppDispatcher } from "store/index"
+import { config, NoPropsFCT, useAppDispatcher, history } from "store/index"
 import useMainQuery from "hooks/use-main-query"
 import useMyUpdates from "hooks/use-my-updates"
 import Header from "components/header"
@@ -140,28 +140,33 @@ const SinpeScreen: NoPropsFCT = () => {
    // postMessageToIframe({action: "resetTimestamp"})
   }
 
+  const handleMessage = async (e: any) => {
+    const data = JSON.parse(e.data)
+    switch(data.action) {
+      case "invoice":
+        const invoice = data.bolt11
+        await payLightning(invoice, btcWallet.id, pubKey, btcWalletBalance)
+
+        break;
+
+      case "createInvoice":
+        newInvoice(data.satAmount, btcWallet.id)
+
+        break;
+
+      case "complete":
+        alert(data.message)
+        history.push("/")
+
+        break;
+    }
+  }
+
   useEffect(() => {
-    window.addEventListener('message', async (e) => {
-      const data = JSON.parse(e.data)
-      switch(data.action) {
-        case "invoice":
-          const invoice = data.bolt11
-          await payLightning(invoice, btcWallet.id, pubKey, btcWalletBalance)
+    window.removeEventListener("message", handleMessage)
+    window.addEventListener('message', handleMessage)
 
-          break;
-
-        case "createInvoice":
-          newInvoice(data.satAmount, btcWallet.id)
-
-          break;
-
-        case "complete":
-          alert(data.message)
-          dispatch({ type: "navigate", path: "/" })
-
-          break;
-      }
-    })
+    return () => window.removeEventListener("message", handleMessage)
   }, [btcWallet, pubKey, btcWalletBalance])
 
   useEffect(() => {
