@@ -43,8 +43,9 @@ gql`
   }
 `
 
-const CaptchaChallengeComponent: React.FC<{ phoneNumber: string }> = ({
+const CaptchaChallengeComponent: React.FC<{ phoneNumber: string, whatsapp: boolean }> = ({
   phoneNumber,
+  whatsapp,
 }) => {
   const [createCaptchaChallenge, { loading: createLoading }] =
     useCaptchaCreateChallengeMutation({
@@ -73,7 +74,7 @@ const CaptchaChallengeComponent: React.FC<{ phoneNumber: string }> = ({
           variables: {
             input: {
               phone: phoneNumber,
-
+              whatsapp: whatsapp,
               challengeCode: result.geetest_challenge,
               validationCode: result.geetest_validate,
               secCode: result.geetest_seccode,
