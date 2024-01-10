@@ -133,6 +133,7 @@ export type CaptchaCreateChallengeResult = {
 export type CaptchaRequestAuthCodeInput = {
   readonly challengeCode: Scalars['String'];
   readonly phone: Scalars['Phone'];
+  readonly whatsapp: Scalars['Boolean'];
   readonly secCode: Scalars['String'];
   readonly validationCode: Scalars['String'];
 };
