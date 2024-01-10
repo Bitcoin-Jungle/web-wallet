@@ -6,11 +6,17 @@ import useMainQuery from "hooks/use-main-query"
 
 import Icon from "components/icon"
 
-const UsernameInput: React.FC<{ lightningAddressDomain: string }> = ({
+const UsernameInput: React.FC<{ lightningAddressDomain: string, refetch: any }> = ({
   lightningAddressDomain,
+  refetch,
 }) => {
+
   const [userUpdateUsername, { loading, errorsMessage }] =
-    useMutation.userUpdateUsername()
+    useMutation.userUpdateUsername({
+      onCompleted: () => {
+        refetch()
+      }
+    })
 
   const submitUsername: React.FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault()
@@ -51,7 +57,7 @@ const UsernameInput: React.FC<{ lightningAddressDomain: string }> = ({
 }
 
 const UsernameSetting: React.FC<{ guestView: boolean }> = ({ guestView }) => {
-  const { username, lightningAddressDomain } = useMainQuery()
+  const { username, lightningAddressDomain, refetch } = useMainQuery()
 
   if (!lightningAddressDomain) {
     throw new Error("No lightningAddressDomain value")
@@ -76,7 +82,7 @@ const UsernameSetting: React.FC<{ guestView: boolean }> = ({ guestView }) => {
     )
   }
 
-  return <UsernameInput lightningAddressDomain={lightningAddressDomain} />
+  return <UsernameInput lightningAddressDomain={lightningAddressDomain} refetch={refetch} />
 }
 
 export default UsernameSetting

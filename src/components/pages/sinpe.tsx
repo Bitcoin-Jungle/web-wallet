@@ -173,6 +173,7 @@ const SinpeScreen: NoPropsFCT = () => {
     setTimeout(() => {
       setMySatBalance(btcWalletBalance)
       setInitialLoad(false)
+      refetch()
     }, 2000)
   }, [])
 
