@@ -127,6 +127,7 @@ const useMainQuery = () => {
     context: {
       credentials: "omit",
     },
+    errorPolicy: "all",
   })
 
   const pubKey = data?.globals?.nodesIds?.[0] ?? ""
