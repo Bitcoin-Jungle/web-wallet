@@ -7,7 +7,7 @@ export const helmetConfig = helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", "https:"],
       connectSrc: ["'self'", "*"],
       imgSrc: ["'self'", "data:", "https:"],
-      frameSrc: ["https://orders.bitcoinjungle.app", "https://maps.bitcoinjungle.app"],
+      frameSrc: ["https://cr.bullbitcoin.com", "https://accounts.bullbitcoin.com", "https://maps.bitcoinjungle.app"],
     },
   },
   crossOriginEmbedderPolicy: false,

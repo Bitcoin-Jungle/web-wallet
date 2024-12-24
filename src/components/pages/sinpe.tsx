@@ -32,7 +32,6 @@ const SinpeScreen: NoPropsFCT = () => {
 
   const newInvoice = async(satAmount: number, btcWalletId: string) => {
     try {
-      postMessageToIframe({action: "toggleLoadingOn"})
 
       const { data } = await createInvoice({
         variables: {
@@ -54,7 +53,6 @@ const SinpeScreen: NoPropsFCT = () => {
 
   // @ts-ignore
   const handleInvoiceReturn = (invoice: string | undefined, errors: Array | undefined) => {  
-    postMessageToIframe({action: "toggleLoadingOff"})
 
     if (!errors || !errors.length) {
       setTimeout(() => {
@@ -88,11 +86,8 @@ const SinpeScreen: NoPropsFCT = () => {
       if (parsedInvoice && parsedInvoice.amount && parsedInvoice.amount > btcWalletBalance) {
         // @ts-ignore
         alert(`Error! Total of ${formatUsd(satsToUsd(parsedInvoice.amount))} exceeds your balance of ${formatUsd(satsToUsd(btcWalletBalance))}`)
-        postMessageToIframe({action: "resetTimestamp"})
         return
       }
-
-      postMessageToIframe({action: "toggleLoadingOn"})
 
       const { data } = await sendPayment({
         variables: {
@@ -113,14 +108,19 @@ const SinpeScreen: NoPropsFCT = () => {
     }
   }
 
-  // @ts-ignore
-  const handlePaymentReturn = (status: string | null | undefined, errors: Array | undefined) => {  
-    postMessageToIframe({action: "toggleLoadingOff"})
+  const confirmLightning = async (amount: number) => {
+    // @ts-ignore
+    const conf = confirm(`You are about to send a payment of ${amount} sats worth ${formatUsd(satsToUsd(amount))}. Would you like to proceed?`)
     
+    if(conf) {
+      postMessageToIframe({action: "userConfirmed"})
+    }
+  }
+
+  // @ts-ignore
+  const handlePaymentReturn = (status: string | null | undefined, errors: Array | undefined) => {      
     if (status === "SUCCESS" || status === "PENDING" || status === "ALREADY_PAID") {
-      setTimeout(() => {
-        postMessageToIframe({action: "submitOrder"})
-      }, 250)
+     
     } else {
       let errorMessage = ''
       if (errors && Array.isArray(errors)) {
@@ -130,19 +130,21 @@ const SinpeScreen: NoPropsFCT = () => {
       }
 
       alert("Error! " + errorMessage)
-      postMessageToIframe({action: "resetTimestamp"})
     }
   }
 
   const handlePaymentError = (error: string) => {
    console.log('handlePaymentError', error)
    // alert("An unexpected error has occurred.")
-   // postMessageToIframe({action: "resetTimestamp"})
   }
 
   const handleMessage = async (e: any) => {
     const data = JSON.parse(e.data)
     switch(data.action) {
+      case "confirm":
+        await confirmLightning(data.amount)
+
+        break;
       case "invoice":
         const invoice = data.bolt11
         await payLightning(invoice, btcWallet.id, pubKey, btcWalletBalance)
@@ -155,9 +157,18 @@ const SinpeScreen: NoPropsFCT = () => {
         break;
 
       case "complete":
-        alert(data.message)
+        alert(`${data.title}\n${data.subtext}`)
         history.push("/")
 
+        break;
+
+      case "sendSms":
+        //nada
+        break;
+
+      case "clickLink":
+        // @ts-ignore
+        window.open(data.url, '_blank').focus()
         break;
     }
   }
@@ -190,16 +201,21 @@ const SinpeScreen: NoPropsFCT = () => {
   return (
     <div className="sinpe">
       <Header page="sinpe" />
-      {!initialLoad ?
+      {/*!initialLoad ?
         <iframe 
           style={{width: "100%", height: "80vh", border: "none"}} 
           // @ts-ignore
-          src={`${config.ordersBaseUrl}?key=E4WE5GgDr6g8HFyS4K4m5rdJ&fromBJ=true&phone=${encodeURIComponent(phoneNumber)}&username=${encodeURIComponent(username)}&lang=${language}&satBalance=${mySatBalance}`}
+          src={`${config.ordersBaseUrl}?fromBJ=true&phone=${encodeURIComponent(phoneNumber)}&username=${encodeURIComponent(username)}&lang=${language}&satBalance=${mySatBalance}`}
         >    
         </iframe>
       : 
         <Spinner size="big" />
-      }
+      */}
+      <h3>Please use Bull Bitcoin in a separate window.</h3>
+      <p>Sorry, we're experiencing a technical glitch right now. To be able to buy and sell Bitcoin, please navigate to cr.bullbitcoin.com in another window.</p>
+      <a href="https://cr.bullbitcoin.com" target="_blank">
+        Continue to Bull Bitcoin
+      </a>
     </div>
   )
 }
